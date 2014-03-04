@@ -683,8 +683,12 @@ def maplwc(tim,lwc,lat,lon,imode,mf=0):
         else:
             lwc=lwc.data
     ax2=fig2.add_subplot(122)
-    llon=np.nanmin(lon); hlon=np.nanmax(lon)
-    llat=np.nanmin(lat); hlat=np.nanmax(lat)
+    try:
+        llon=np.nanmin(lon); hlon=np.nanmax(lon)
+        llat=np.nanmin(lat); hlat=np.nanmax(lat)
+    except: 
+        if type(lon)==np.ma.core.MaskedArray: llon=np.min(lon); hlon=np.max(lon)
+        if type(lon)==np.ma.core.MaskedArray: llat=np.min(lat); hlat=np.max(lat)
     m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=10000)
     x, y = m(lon, lat)
     m.drawcoastlines(linewidth=0.25)
