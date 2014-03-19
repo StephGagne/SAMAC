@@ -543,7 +543,7 @@ class Cloud(dict):
                     elif np.shape(self.sd[i]["data"])[1]==0 or np.shape(self.sd[i]["data"])[0]==0: print("    [plotsd] Error due to the distribution being empty.")
                     else:
                         chan=self.sd[i]["bins"]
-                        Zdata=self.sd[i]["data"]; Zdata[Zdata<=1e-6]=1e-6;
+                        Zdata=copy.copy(self.sd[i]["data"]); Zdata[Zdata<=1e-6]=1e-6;
                         if np.shape(np.nonzero((self.sd[i]["time"]>=self.times[scanq][h][0])*(self.sd[i]["time"]<=self.times[scanq][h][1]))[0])[0]==0:
                             print("    [plotsd] No data available for this period.")
                         elif np.shape(np.nonzero((self.sd[i]["time"]>=self.times[scanq][h][0])*(self.sd[i]["time"]<=self.times[scanq][h][1]))[0])[0]<=1:
