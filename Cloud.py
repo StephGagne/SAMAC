@@ -1909,7 +1909,8 @@ class Cloud(dict):
             if sum(asd[0])==0: plt.plot(asd[1],asd[0],'b-*')
             else: plt.loglog(asd[1],asd[0],'b-*')
             plt.xlabel("Diameter (um)")
-            plt.ylabel('concentration [dN/dlogDp](cm-3)')
+            unitsname=[self.sd[i]["units"] for i,x in enumerate(self.sd) if x["Distname"].upper()==inst.upper()]
+            plt.ylabel('concentration [dN/dlogDp](%s)' %(unitsname[0]))
             plt.show()
         
 
