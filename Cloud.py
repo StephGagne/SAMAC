@@ -1931,19 +1931,24 @@ class Cloud(dict):
         SD=list()
         specs=['b-*','r-o','c-v','m-d','g-s','k-^','b--o','r--*']
         instlist=[x["Distname"] for i,x in enumerate(self.sd)]
+        unitlist=[x["units"] for i,x in enumerate(self.sd)]
+        alllist=[[x,unitlist[i]] for i,x in enumerate(instlist)]
         if exc==None: pass
         else:
             X=exc.split(',');
             for c in range(len(X)):
                 X[c]=X[c].strip()
             for c in range(len(X)):
-                instlist=[x for x in instlist if X[c].lower() not in x.lower()]
-        for i in range(len(instlist)):
-            SD.append(self.avsizedist(prof=prof,scan=num,inst=instlist[i]))
+                alllist=[x for i,x in enumerate(alllist) if X[c].lower() not in x[0].lower()]
+        for i in range(len(alllist)):
+            SD.append(self.avsizedist(prof=prof,scan=num,inst=alllist[i][0]))
             plt.loglog(SD[i][1],SD[i][0],specs[i])
-        plt.legend(instlist,loc=3)
+        instunit=list()
+        for i in range(len(alllist)):
+            instunit.append(alllist[i][0]+' ('+alllist[i][1]+')')
+        plt.legend(instunit,loc=3)
         plt.xlabel('diameter (um)')
-        plt.ylabel('concentration [dN/dlogDp](cm-3)')
+        plt.ylabel('concentration [dN/dlogDp]')
         post=[i for i,x in enumerate(self.dttl) if x == 'time'] # position of the time
         plt.title("Average size dist. for %s no. %d on %s @ %s \n (%s)" % (prof, num, self.desc["date"], (dt.datetime(1,1,1)+dt.timedelta(days=self.data[post][0][0])).strftime('%H:%M'), self.desc["humanplace"]))
         if interact==0: plt.show()
