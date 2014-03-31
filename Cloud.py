@@ -290,7 +290,7 @@ class Cloud(dict):
                 TakenSDs.append([p1[0]["Distname"],p1[0]["units"]]); TakenSDs.append([p1[0]["Distname"],p1[0]["units"]]);
             else: 
                 print("Precipitation distributions:")
-                for i,x in enumerate(dname): print("%d- %s" % (i,x))
+                for i,x in enumerate(p): print("%d- %s (sdtype=%s)" % (i,x["Distname"],x["sdtype"]))
                 Q=raw_input("Which is your primary Precipitation distribution (consider editing sdtype if this is permanent)? [n]/#  ")
                 try: 
                     Q=int(Q); pr["100"]=dNdlogDp2N(p[Q],100,nan); pr["200"]=dNdlogDp2N(p[Q],200,nan); pr["time100"]=p[Q]["time"]; pr["time200"]=p[Q]["time"]; 
