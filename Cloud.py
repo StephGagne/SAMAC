@@ -82,7 +82,7 @@ np.seterr(divide='ignore',invalid='ignore')        # ignoring warning of divisio
 
 
 ### SAMAC version ###
-__version__="0.9.1" #
+__version__="0.9.2" #
 ### SAMAC version ###
 
 class Cloud(dict):
