@@ -2697,6 +2697,7 @@ class Cloud(dict):
         """ This method will make a 3D plot of the flightpath of the plane during measurement.
         Colours correspond to the time tracking colours (colours may only work with later versions of matplotlib)."""
         import mpl_toolkits.mplot3d.axes3d as p3
+        from mpl_toolkits.basemap import Basemap
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib import cm
         import copy
@@ -2708,10 +2709,19 @@ class Cloud(dict):
         alt=copy.deepcopy(self.data[1].data)
         t=copy.deepcopy(self.data[0].data)
 
-        
+        #FIND THE QUADRANT
+        if nanmean(lat)>0:
+            quad_NS = 'N'
+        else:
+            quad_NS = 'S'
+
+        if nanmean(lon)>0:
+            quad_EW = 'E'
+        else:
+            quad_EW = 'W'
+
+
         M=runstats(alt,20)
-
-
         alt=ma.masked_where((alt>(M[0]+M[1]*1.)+(isnan(alt))), alt)
             
         cmap=matplotlib.cm.spectral
@@ -2719,10 +2729,18 @@ class Cloud(dict):
 
         fig = pl.figure()
         ax = Axes3D(fig)
-        
+        majorFormatter_lon = FormatStrFormatter('%.1f '+quad_EW)
+        majorFormatter_lat = FormatStrFormatter('%.1f '+quad_NS)
         try:
             if int(matplotlib.__version__[0])>0:
-                ax.scatter(lat,lon,alt,lw=0,alpha=1,cmap=cmap,norm=norm,c=t)
+                ax.scatter(abs(lat),abs(lon),alt,lw=0,alpha=1,cmap=cmap,norm=norm,c=t)
+                ax.view_init(28,145)
+                ax.yaxis.set_major_formatter(majorFormatter_lon)
+                ax.xaxis.set_major_formatter(majorFormatter_lat)
+                if quad_EW == 'E':
+                    ax.set_ylim(ax.get_ylim()[::-1])
+                if quad_NS == 'S':
+                    ax.set_xlim(ax.get_xlim()[::-1])
             else: ax.scatter(lat,lon,alt,lw=0,alpha=1,cmap=cmap,norm=norm)
         except: print("[path3d] Error evaluating your version of matplotlib.")
         ax.set_xlabel('Latitude')
