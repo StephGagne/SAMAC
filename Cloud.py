@@ -54,6 +54,7 @@
 # effrad(self,inst, bindist='lin')
 # path3d(self)
 # filler(self,ts,timestep=10.0,inst='2dc')
+# turbhrz(self,MaxCA=2,MinDist=20000,PtNo=25,Pts=5,Pts2=50)
 # writeouthdf5(fName=None,fdir=None)
 
 # properties:
@@ -63,7 +64,6 @@
 # presinfo
 # precipblwTF
 # precipblwvpTF
-# turbhrz
 # angles
 
 from pylab import *
