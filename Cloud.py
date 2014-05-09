@@ -2710,12 +2710,12 @@ class Cloud(dict):
         t=copy.deepcopy(self.data[0].data)
 
         #FIND THE QUADRANT
-        if nanmean(lat)>0:
+        if st.nanmean(lat)>0:
             quad_NS = 'N'
         else:
             quad_NS = 'S'
 
-        if nanmean(lon)>0:
+        if st.nanmean(lon)>0:
             quad_EW = 'E'
         else:
             quad_EW = 'W'
