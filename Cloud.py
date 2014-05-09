@@ -2830,7 +2830,7 @@ class Cloud(dict):
             Pts: number of points taken in running statistics of angles. Default is 5.
             Pts2: number of points taken in running statistics of the combined angle. Default is 50.
         Returns a dictionary:
-        R["InCloud"]: List with one item for each stretch level enough for at least 20 km in cloud (N, first=0). Each item contains an array with the turbulence value R["InCloud"][N][0] and the distance on which it was calculated R["InCloud"][N][1].
+        R["InCloud"]: List with one item for each stretch level enough for at least MinDist km in cloud (N, first=0). Each item contains an array with the turbulence value R["InCloud"][N][0] and the distance on which it was calculated R["InCloud"][N][1].
         R["BlwCloud"]: List with one item for each stretch level enough for at least 20 km below cloud (N, first=0). Each item contains an array with the turbulence value R["InCloud"][N][0] and the distance on which it was calculated R["InCloud"][N][1].
         R["InCloudStretches"]: List with one item for each stretch level enough during at least 20 km in cloud (N, first=0). Each item contains an array with the indexes corresponding to the stretch used to calculate the corresponding turbulence value.
         R["BlwCloudStretches"]: List with one item for each stretch level enough during at least 20 km below cloud (N, first=0). Each item contains an array with the indexes corresponding to the stretch used to calculate the corresponding turbulence value. """
