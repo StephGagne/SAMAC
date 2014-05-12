@@ -54,6 +54,7 @@
 # effrad(self,inst, bindist='lin')
 # path3d(self)
 # filler(self,ts,timestep=10.0,inst='2dc')
+# turbhrz(self,MaxCA=2,MinDist=20000,PtNo=25,Pts=5,Pts2=50)
 # writeouthdf5(fName=None,fdir=None)
 
 # properties:
@@ -63,7 +64,6 @@
 # presinfo
 # precipblwTF
 # precipblwvpTF
-# turbhrz
 # angles
 
 from pylab import *
@@ -2695,19 +2695,17 @@ class Cloud(dict):
     ########################################################################
     def path3d(self):
         """ This method will make a 3D plot of the flightpath of the plane during measurement.
-        Colours correspond to the time tracking colours (colours may only work with later versions of matplotlib)."""
-        import mpl_toolkits.mplot3d.axes3d as p3
-        from mpl_toolkits.basemap import Basemap
+        Colours correspond to the time tracking colours (colours may not work if using an old version of matplotlib)."""
         from mpl_toolkits.mplot3d import Axes3D
-        from matplotlib import cm
-        import copy
-        import numpy as np
-        import pylab as pl
-        import numpy.ma as ma
-        lat=copy.deepcopy(self.data[2])
-        lon=copy.deepcopy(self.data[3])
-        alt=copy.deepcopy(self.data[1].data)
-        t=copy.deepcopy(self.data[0].data)
+        
+        plat=[i for i,x in enumerate(self.dttl) if x == 'latitude'][0]
+        lat=copy.deepcopy(self.data[plat])
+        plon=[i for i,x in enumerate(self.dttl) if x == 'longitude'][0]
+        lon=copy.deepcopy(self.data[plon])
+        palt=[i for i,x in enumerate(self.dttl) if x == 'altitude'][0]
+        alt=copy.deepcopy(self.data[palt].data)
+        pt=[i for i,x in enumerate(self.dttl) if x == 'time'][0]
+        t=copy.deepcopy(self.data[pt].data)
 
         #FIND THE QUADRANT
         if st.nanmean(lat)>0:
@@ -2722,18 +2720,17 @@ class Cloud(dict):
 
 
         M=runstats(alt,20)
-        alt=ma.masked_where((alt>(M[0]+M[1]*1.)+(isnan(alt))), alt)
+        alt=np.ma.masked_where((alt>(M[0]+M[1]*1.)+(isnan(alt))), alt)
             
-        cmap=matplotlib.cm.spectral
         norm = matplotlib.colors.Normalize(vmin=t[0],vmax=t[-1])
 
-        fig = pl.figure()
+        fig = figure()
         ax = Axes3D(fig)
-        majorFormatter_lon = FormatStrFormatter('%.1f '+quad_EW)
-        majorFormatter_lat = FormatStrFormatter('%.1f '+quad_NS)
+        majorFormatter_lon = FormatStrFormatter('%.2f '+quad_EW)
+        majorFormatter_lat = FormatStrFormatter('%.2f '+quad_NS)
         try:
             if int(matplotlib.__version__[0])>0:
-                ax.scatter(abs(lat),abs(lon),alt,lw=0,alpha=1,cmap=cmap,norm=norm,c=t)
+                ax.scatter(abs(lat),abs(lon),alt,lw=0,alpha=1,cmap='spectral',norm=norm,c=t)
                 ax.view_init(28,145)
                 ax.yaxis.set_major_formatter(majorFormatter_lon)
                 ax.xaxis.set_major_formatter(majorFormatter_lat)
@@ -2741,13 +2738,22 @@ class Cloud(dict):
                     ax.set_ylim(ax.get_ylim()[::-1])
                 if quad_NS == 'S':
                     ax.set_xlim(ax.get_xlim()[::-1])
-            else: ax.scatter(lat,lon,alt,lw=0,alpha=1,cmap=cmap,norm=norm)
+            else: 
+                print "yup"
+                ax.scatter(abs(lat),abs(lon),alt,lw=0,alpha=1,cmap='spectral',norm=norm)
+                ax.view_init(28,145)
+                ax.yaxis.set_major_formatter(majorFormatter_lon)
+                ax.xaxis.set_major_formatter(majorFormatter_lat)
+                if quad_EW == 'E':
+                    ax.set_ylim(ax.get_ylim()[::-1])
+                if quad_NS == 'S':
+                    ax.set_xlim(ax.get_xlim()[::-1])
         except: print("[path3d] Error evaluating your version of matplotlib.")
         ax.set_xlabel('Latitude')
         ax.set_ylabel('Longitude')
         ax.set_zlabel('Altitude')
         
-        pl.show()
+        plt.show()
         
     ########################################################################        
     ###############################  filler  ###############################
