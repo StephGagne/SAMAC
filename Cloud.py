@@ -792,7 +792,7 @@ class Cloud(dict):
     def addsizedist(self):
         """ This method is used to add a size distribution to the cloud object, from file of basic text formats (e.g. txt or dat). Excel spreadsheets are not supported by this function. Use addsizedistxl instead.
             The added size distribution will be found appended to CloudObj.sd.
-            The source file as well as the source sheet will be saved along with the distribution."""
+            The source file will be saved along with the distribution."""
         from CloudDataSorter import todatenum
         import Tkinter, tkFileDialog
         dirnames=[]; pathnames=[]; fnames=[];
