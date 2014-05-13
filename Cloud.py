@@ -2903,6 +2903,7 @@ class Cloud(dict):
             Dist=Dist[(Dist.mask==False)]
             if (Dist[-1]-Dist[0]) >= MinDist:     # if the stretch is longer than the minimum distance.
                 BCStretches.append(np.array(leg))
+            del Dist
         # In-Cloud #
         Stret=list()
         i=0
@@ -2919,21 +2920,24 @@ class Cloud(dict):
             Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (Dist[-1]-Dist[0]) >= MinDist:     # if the strecht is longer than the minimum distance.
                 ICStretches.append(np.array(leg))       
+            del Dist
         # Calculating the average turbulence.
         ICturb=list(); BCturb=list()
         for leg in ICStretches:
+            Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (sum(leg)>PtNo and sum(~isnan(udv[leg]))>PtNo):
                 turb=st.nanmean(runstats(udv[leg],PtNo)[1])
-                Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
                 #print("In-Cloud %d: %.4f km. w' = %0.4f m/s" %(cn,(Dist[-1]-Dist[0])/1000,turb))
                 ICturb.append(np.array([turb,(Dist[-1]-Dist[0])]))
+                del Dist
         for leg in BCStretches:
+            Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (sum(leg)>PtNo and sum(~isnan(udv[leg]))>PtNo):
                 turb=st.nanmean(runstats(udv[leg],PtNo)[1])
-                Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
                 #print("Below-Cloud %d: %.4f km. w' = %0.4f m/s" %(cn,(Dist[-1]-Dist[0])/1000,turb))
                 BCturb.append(np.array([turb,(Dist[-1]-Dist[0])]))
             else: BCturb.append(np.array([nan,(Dist[-1]-Dist[0])]))
+            del Dist
                 
         R=dict()
         R["InCloud"]=ICturb; R["BlwCloud"]=BCturb; R["InCloudStretches"]=ICStretches; R["BlwCloudStretches"]=BCStretches
