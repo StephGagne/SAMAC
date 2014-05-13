@@ -939,7 +939,7 @@ class Cloud(dict):
         Q=raw_input("Enter the column with the total concentration:  ")
         try:
             Q=int(Q)
-            sdtmp["total"]=np.array(sdd[Q])
+            sdtmp["total"]=np.array(sdd[:,Q])
         except: 
             try: 
                 sd4tot=dict(); sd4tot["bins"]=sdtmp["bins"]; sd4tot["data"]=sdtmp["data"].transpose(); sd4tot["time"]=sdtmp["time"];
