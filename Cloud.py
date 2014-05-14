@@ -556,7 +556,7 @@ class Cloud(dict):
                             ptime=ptime[np.nonzero((self.sd[i]["time"]>=self.times[scanq][h][0])*(self.sd[i]["time"]<=self.times[scanq][h][1]))[0]];
                             ptime=ptime-np.floor(ptime[1]); 
                             plt.pcolor(ptime,chan,np.log10(Zdata))
-                            Zmax=math.ceil(np.max(np.log10(Zdata)))
+                            Zmax=math.ceil(np.nanmax(np.log10(Zdata)))
                             if Zmax>0:
                                 plt.clim([0,Zmax])
                                 cbar=plt.colorbar(orientation='horizontal',ticks=[0,Zmax/4.,Zmax/2.,3*Zmax/4.,Zmax],format=plt.FormatStrFormatter('$10^{%2.2f}$'))
