@@ -856,7 +856,7 @@ class Cloud(dict):
                 delima=raw_input("What is the file's delimiter?  ")
                 sds=[]; inp = open(smpsfn,'r') # open file
                 for line in inp.readlines():
-                    ltmp=line.strip("\n"); ltmp=ltmp.split(delima);       # trying two spaces as delimiter
+                    ltmp=line.strip("\n"); ltmp=ltmp.split(delima);     # consider quicker loading functions such as np.loadtxt
                     sds.append(ltmp)
                     inp.close()
         except:
@@ -1940,6 +1940,7 @@ class Cloud(dict):
                 X[c]=X[c].strip()
             for c in range(len(X)):
                 alllist=[x for i,x in enumerate(alllist) if X[c].lower() not in x[0].lower()]
+                #alllist=[x for i,x in enumerate(alllist) if X[c].lower()!=x[0].lower()]
         for i in range(len(alllist)):
             SD.append(self.avsizedist(prof=prof,scan=num,inst=alllist[i][0]))
             plt.loglog(SD[i][1],SD[i][0],specs[i])
@@ -3106,12 +3107,15 @@ class Cloud(dict):
                 ta=t[nonzero((t>=ta1)*(t<=ta2))[0]]
                 alt=alt[nonzero((t>=ta1)*(t<=ta2))[0]]
                 f=interpolate.interp1d(lwctime,lwc,kind='linear')
-                lwc=f(ta)
+                if 'ma' not in str(type(lwc)).lower(): lwc=np.ma.array(lwc,mask=False)
+                fma=interpolate.interp1d(lwctime,lwc.mask,kind='linear')    # interpolating the mask
+                lwc=np.ma.array(f(ta),mask=fma(ta))
             else: print("[lwp] No LWC was found in the basic data or multiple were found in the extra data."); return LWP
-        for j in self.times["verticloud"]:
+        for k,j in enumerate(self.times["verticloud"]):
             alti=alt[np.nonzero((ta>=j[0])*(ta<=j[1]))]; dalt=np.diff(alti);
             lwci=lwc[np.nonzero((ta>=j[0])*(ta<=j[1]))]; lwci=lwci[1:];
-            LWP.append(abs(sum(lwci*dalt)))
+            if sum(lwci)<0: LWP.append(nan); print("[lwp]: Too much noise, not enough signal in LWC. No LWP calculated for scan %d." %(k))
+            else: LWP.append(abs(sum(lwci*dalt)))
         LWP=np.reshape(np.array(LWP),(-1,1))
         return LWP
 
