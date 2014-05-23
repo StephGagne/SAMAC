@@ -556,7 +556,7 @@ class Cloud(dict):
                             ptime=ptime[np.nonzero((self.sd[i]["time"]>=self.times[scanq][h][0])*(self.sd[i]["time"]<=self.times[scanq][h][1]))[0]];
                             ptime=ptime-np.floor(ptime[1]); 
                             plt.pcolor(ptime,chan,np.log10(Zdata))
-                            Zmax=math.ceil(np.max(np.log10(Zdata)))
+                            Zmax=math.ceil(np.nanmax(np.log10(Zdata)))
                             if Zmax>0:
                                 plt.clim([0,Zmax])
                                 cbar=plt.colorbar(orientation='horizontal',ticks=[0,Zmax/4.,Zmax/2.,3*Zmax/4.,Zmax],format=plt.FormatStrFormatter('$10^{%2.2f}$'))
@@ -792,7 +792,7 @@ class Cloud(dict):
     def addsizedist(self):
         """ This method is used to add a size distribution to the cloud object, from file of basic text formats (e.g. txt or dat). Excel spreadsheets are not supported by this function. Use addsizedistxl instead.
             The added size distribution will be found appended to CloudObj.sd.
-            The source file as well as the source sheet will be saved along with the distribution."""
+            The source file will be saved along with the distribution."""
         from CloudDataSorter import todatenum
         import Tkinter, tkFileDialog
         dirnames=[]; pathnames=[]; fnames=[];
@@ -856,7 +856,7 @@ class Cloud(dict):
                 delima=raw_input("What is the file's delimiter?  ")
                 sds=[]; inp = open(smpsfn,'r') # open file
                 for line in inp.readlines():
-                    ltmp=line.strip("\n"); ltmp=ltmp.split(delima);       # trying two spaces as delimiter
+                    ltmp=line.strip("\n"); ltmp=ltmp.split(delima);     # consider quicker loading functions such as np.loadtxt
                     sds.append(ltmp)
                     inp.close()
         except:
@@ -939,7 +939,7 @@ class Cloud(dict):
         Q=raw_input("Enter the column with the total concentration:  ")
         try:
             Q=int(Q)
-            sdtmp["total"]=np.array(sdd[Q])
+            sdtmp["total"]=np.array(sdd[:,Q])
         except: 
             try: 
                 sd4tot=dict(); sd4tot["bins"]=sdtmp["bins"]; sd4tot["data"]=sdtmp["data"].transpose(); sd4tot["time"]=sdtmp["time"];
@@ -1940,6 +1940,7 @@ class Cloud(dict):
                 X[c]=X[c].strip()
             for c in range(len(X)):
                 alllist=[x for i,x in enumerate(alllist) if X[c].lower() not in x[0].lower()]
+                #alllist=[x for i,x in enumerate(alllist) if X[c].lower()!=x[0].lower()]
         for i in range(len(alllist)):
             SD.append(self.avsizedist(prof=prof,scan=num,inst=alllist[i][0]))
             plt.loglog(SD[i][1],SD[i][0],specs[i])
@@ -2903,6 +2904,7 @@ class Cloud(dict):
             Dist=Dist[(Dist.mask==False)]
             if (Dist[-1]-Dist[0]) >= MinDist:     # if the stretch is longer than the minimum distance.
                 BCStretches.append(np.array(leg))
+            del Dist
         # In-Cloud #
         Stret=list()
         i=0
@@ -2919,21 +2921,24 @@ class Cloud(dict):
             Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (Dist[-1]-Dist[0]) >= MinDist:     # if the strecht is longer than the minimum distance.
                 ICStretches.append(np.array(leg))       
+            del Dist
         # Calculating the average turbulence.
         ICturb=list(); BCturb=list()
         for leg in ICStretches:
+            Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (sum(leg)>PtNo and sum(~isnan(udv[leg]))>PtNo):
                 turb=st.nanmean(runstats(udv[leg],PtNo)[1])
-                Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
                 #print("In-Cloud %d: %.4f km. w' = %0.4f m/s" %(cn,(Dist[-1]-Dist[0])/1000,turb))
                 ICturb.append(np.array([turb,(Dist[-1]-Dist[0])]))
+                del Dist
         for leg in BCStretches:
+            Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
             if (sum(leg)>PtNo and sum(~isnan(udv[leg]))>PtNo):
                 turb=st.nanmean(runstats(udv[leg],PtNo)[1])
-                Dist=D[leg]; Dist=Dist[(Dist.mask==False)]
                 #print("Below-Cloud %d: %.4f km. w' = %0.4f m/s" %(cn,(Dist[-1]-Dist[0])/1000,turb))
                 BCturb.append(np.array([turb,(Dist[-1]-Dist[0])]))
             else: BCturb.append(np.array([nan,(Dist[-1]-Dist[0])]))
+            del Dist
                 
         R=dict()
         R["InCloud"]=ICturb; R["BlwCloud"]=BCturb; R["InCloudStretches"]=ICStretches; R["BlwCloudStretches"]=BCStretches
@@ -3102,12 +3107,15 @@ class Cloud(dict):
                 ta=t[nonzero((t>=ta1)*(t<=ta2))[0]]
                 alt=alt[nonzero((t>=ta1)*(t<=ta2))[0]]
                 f=interpolate.interp1d(lwctime,lwc,kind='linear')
-                lwc=f(ta)
+                if 'ma' not in str(type(lwc)).lower(): lwc=np.ma.array(lwc,mask=False)
+                fma=interpolate.interp1d(lwctime,lwc.mask,kind='linear')    # interpolating the mask
+                lwc=np.ma.array(f(ta),mask=fma(ta))
             else: print("[lwp] No LWC was found in the basic data or multiple were found in the extra data."); return LWP
-        for j in self.times["verticloud"]:
+        for k,j in enumerate(self.times["verticloud"]):
             alti=alt[np.nonzero((ta>=j[0])*(ta<=j[1]))]; dalt=np.diff(alti);
             lwci=lwc[np.nonzero((ta>=j[0])*(ta<=j[1]))]; lwci=lwci[1:];
-            LWP.append(abs(sum(lwci*dalt)))
+            if sum(lwci)<0: LWP.append(nan); print("[lwp]: Too much noise, not enough signal in LWC. No LWP calculated for scan %d." %(k))
+            else: LWP.append(abs(sum(lwci*dalt)))
         LWP=np.reshape(np.array(LWP),(-1,1))
         return LWP
 
