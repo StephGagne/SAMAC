@@ -1551,7 +1551,7 @@ class Cloud(dict):
                     title("Vertical scan %d" % (Q))
                     xlabel("LWC (g/m3)")
                     ylabel("Altitude (m)")
-                    print("1-Good quality (young/smooth) \t2-Entrainment at the top \t3-Entrainment at the bottom \t4-Entrainment in the cloud \t5-missing data \t6-Other/Bad/Evaporated \t7-lwc>adiabatic \nEnter the flags separated with commas.  ")
+                    print("1-Good quality (young/smooth) \t2-Entrainment at the top \t3-Entrainment at the bottom \t4-Entrainment in the cloud \t5-missing data \t6-Other/Bad/Evaporated/Incomplete Profile \t7-lwc>adiabatic \nEnter the flags separated with commas.  ")
                     L=np.array(map(int,raw_input("What are the vertical profile's flags belonging to scan %d.  " % (Q)).split(',')))
                     self.props["lwcflags"][Q]=L
                     plt.close(3)
