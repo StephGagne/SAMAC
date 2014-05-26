@@ -1558,7 +1558,7 @@ class Cloud(dict):
             except: print("[lwcflag] The sequence was aborted.")
         except:
             self.props["lwcflags"]=list()
-            if len(self.times["verticloud"])>0: print("1-Good quality (young/smooth) \t2-Entrainment at the top \t3-Entrainment at the bottom \t4-Entrainment in the cloud \t5-missing data \t6-Other/Bad/Evaporated \t7-lwc>adiabatic \nEnter the flags separated with commas.  ")
+            if len(self.times["verticloud"])>0: print("1-Good quality (young/smooth) \t2-Entrainment at the top \t3-Entrainment at the bottom \t4-Entrainment in the cloud \t5-missing data \t6-Other/Bad/Evaporated/Incomplete Profile \t7-lwc>adiabatic \nEnter the flags separated with commas.  ")
             for j,ts in enumerate(self.times["verticloud"]):
                 ix=np.nonzero((lwctime>=ts[0])*(lwctime<=ts[1]))
                 figure(2)
