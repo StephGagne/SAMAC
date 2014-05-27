@@ -1312,9 +1312,9 @@ def dNdlogDp2N(dist,z1,z2):
         # investigating the z1 and z2 (integration limits)
         lz1=np.log10(z1); lz2=np.log10(z2);
         if not isnan(z1):
-            if lz1<b[0]: print("Lower integration limit (z1=%.2f) is outside measurement range (%.2f). Integration performed from the lowest available size." %(z1,10**b[0])); z1=nan; 
+            if lz1<b[0]: print("[dNdlogDp2N] Lower integration limit (z1=%.2f) is outside measurement range (%.2f). Integration performed from the lowest available size." %(z1,10**b[0])); z1=nan; 
         if not isnan(z2):
-            if lz2>h[-1]: print("Upper integration limit (z2=%.2f) is outside measurement range (%.2f). Integration performed from the highest available size." %(z2,10**h[-1])); z2=nan; 
+            if lz2>h[-1]: print("[dNdlogDp2N] Upper integration limit (z2=%.2f) is outside measurement range (%.2f). Integration performed from the highest available size." %(z2,10**h[-1])); z2=nan; 
         # finding the 'full bins': when the full size range of the bin is within z1 and z2
         if isnan(z2) and isnan(z1): ix=range(len(Z));
         elif isnan(z2): ix=np.nonzero((b>=lz1))[0]

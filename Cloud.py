@@ -1308,21 +1308,21 @@ class Cloud(dict):
         AA=list();  CC=list(); DD100=list(); DD200=list(); DDtotSize=list(); DDtot=list();
         for sd in A:        # Aerosols
             try: 
-                ix=nonzero((sd["time"]>=ts1)*(sd["time"]<=ts2))[0]
+                ix=nonzero((sd["time"]>=talt[0])*(sd["time"]<=talt[-1]))[0]
                 sdtime=sd["time"][ix]
                 newalt=f(sdtime)
                 AA.append(np.ma.vstack((newalt,sd["total"][ix])))
             except: AA.append(np.ones((2,1))*NaN); print("[wholeprof] %s was not successfully added to the plot." % sd["Distname"])
         for sd in C:        # Cloud droplets
             try: 
-                ix=nonzero((sd["time"]>=ts1)*(sd["time"]<=ts2))[0]
+                ix=nonzero((sd["time"]>=talt[0])*(sd["time"]<=talt[-1]))[0]
                 sdtime=sd["time"][ix]
                 newalt=f(sdtime)
                 CC.append(np.ma.vstack((newalt,sd["total"][ix])))
             except: CC.append(np.ones((2,1))*NaN); print("[wholeprof] %s was not successfully added to the plot." % sd["Distname"])
         for sd in D:        # Drizzle drops
             try: 
-                ix=nonzero((sd["time"]>=ts1)*(sd["time"]<=ts2))[0]
+                ix=nonzero((sd["time"]>=talt[0])*(sd["time"]<=talt[-1]))[0]
                 sdtime=sd["time"][ix]
                 newalt=f(sdtime)
                 if sum(~isnan(sd["data"]))==0 and sum(~isnan(sd["total"]))>0:
