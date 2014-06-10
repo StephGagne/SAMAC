@@ -303,7 +303,7 @@ def plotcloud2(tim,alt,lat,lon,lwc,lwctime,aero,aerotime,cld,cldtime,pr,TakenSDs
                         ax2=fig2.add_subplot(122)
                         llon=np.nanmin(lon); hlon=np.nanmax(lon)
                         llat=np.nanmin(lat); hlat=np.nanmax(lat)
-                        m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=10000)
+                        m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
                         x, y = m(lon[minindex]*-1.,lat[minindex])
                         ax2.scatter(x,y,s=50, marker='o',color='r',edgecolors='none')
                         mfq=raw_input("Are you satisfied with your selection? ([y]/n)   ")
@@ -587,7 +587,7 @@ def plotcloud(cmall,mcols,c2d,cZs,Adj,Offsts,figi,Qs,proftimes=None,Rtime=None):
                         print("This is not an option. Try again!")
                     Optie=0
 
-                elif Pquest.lower()=='mf':        ####### add pts to map #######
+                elif Pquest.lower()=='mf':        ####### add pts to map ####### Not yet in options, not yet working
                     mfq='n'
                     print("Click on a point in time to highlight it on the map")
                     while mfq=='n':
@@ -606,7 +606,7 @@ def plotcloud(cmall,mcols,c2d,cZs,Adj,Offsts,figi,Qs,proftimes=None,Rtime=None):
                         ax2=fig2.add_subplot(122)
                         llon=np.nanmin(mall[lon]*-1.); hlon=np.nanmax(mall[lon]*-1.)
                         llat=np.nanmin(mall[lat]); hlat=np.nanmax(mall[lat])
-                        m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=10000)
+                        m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
                         x, y = m(mall[lon][minindex]*-1.,mall[lat][minindex])
                         ax2.scatter(x,y,s=50, marker='o',color='r',edgecolors='none')
                         mfq=raw_input("Are you satisfied with your selection? ([y]/n)   ")
@@ -663,7 +663,7 @@ def maplwc(tim,lwc,lat,lon,imode,mf=0):
         llon=np.floor(lon.min()); hlon=np.ceil(lon.max())
         llat=np.floor(lat.min()); hlat=np.ceil(lat.max())
 
-    m = Basemap(llcrnrlon=llon-2, llcrnrlat=llat-2, urcrnrlon=hlon+2, urcrnrlat=hlat+2, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=10000)
+    m = Basemap(llcrnrlon=llon-2, llcrnrlat=llat-2, urcrnrlon=hlon+2, urcrnrlat=hlat+2, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
     x, y = m(lon, lat)
     m.drawcoastlines(linewidth=0.25)
     m.drawcountries(linewidth=0.2)
@@ -689,7 +689,7 @@ def maplwc(tim,lwc,lat,lon,imode,mf=0):
     except: 
         if type(lon)==np.ma.core.MaskedArray: llon=np.min(lon); hlon=np.max(lon)
         if type(lon)==np.ma.core.MaskedArray: llat=np.min(lat); hlat=np.max(lat)
-    m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=10000)
+    m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
     x, y = m(lon, lat)
     m.drawcoastlines(linewidth=0.25)
     m.drawcountries(linewidth=0.2)
