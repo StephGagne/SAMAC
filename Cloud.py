@@ -1740,20 +1740,21 @@ class Cloud(dict):
         Q=raw_input("Choose the quantity you want to inspect (type number as it appears in the list).  ")
         if Q[0].upper()=='X':
             [X1,Q]=map(int,Q.upper().strip('X').split('-'))
-            if X1<0: print("[MaskData] the number cannot be negative."); crash
+            if X1<0: raise ValueError("[MaskData] the number cannot be negative."); 
             try:
                 self.extradata[X1]=np.ma.array(self.extradata[X1])
                 dv=self.extradata[X1][Q];   # data vector
                 k=[k for k,x in enumerate(self.extrattl[X1]) if x.lower() == 'time'][0]
                 dvt=self.extradata[X1][k]   # time vector
-            except: print("[MaskData] Problem loading data."); crash
+            except: raise RuntimeError("[MaskData] Problem loading data. Was your entry correct?"); 
         else: 
             try: 
                 Q=int(Q)
-                dv=self.data[Q]
+                if Q<0: print("[MaskData] No negative numbers accepted."); crash
+                dv=np.ma.array(self.data[Q])
                 post=[i for i,x in enumerate(self.dttl) if x == 'time'][0] # position of time
                 dvt=self.data[post]
-            except: print("[MaskData] Wrong entry! This is not as expected."); crash
+            except: raise RuntimeError("[MaskData] Wrong entry or unexpected behaviour. Was your entry the right integer? Is there an entry called 'time'?");
         
         fig=plt.figure(30)
         plot(dvt,dv,'b.')
