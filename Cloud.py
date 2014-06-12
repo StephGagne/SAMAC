@@ -350,7 +350,10 @@ class Cloud(dict):
                 lwc=nan*ones([len(tim)])    # preallocating
                 ix=((tim>=t1[0])*(tim<=t1[-1]))    # index of interpolating times within the limit of the original time stamp
                 f=interpolate.interp1d(t1,lwc1,'linear')    
+                if 'ma' not in str(type(lwc1)).lower(): lwc1=np.ma.array(lwc1,mask=False)  # creating a mask if none exists
+                fma=interpolate.interp1d(t1,lwc1.mask,kind='linear')    # interpolating the mask
                 lwc[ix]=f(tim[ix])
+                lwc=np.ma.array(f(tim[ix]),mask=fma(tim[ix]))
                 lwc=np.ma.masked_where(isnan(lwc), lwc)
             else: 
                 print("[mapcloud] No LWC (or multiple) was found in the basic data, and not in the extra data either.")
@@ -369,6 +372,9 @@ class Cloud(dict):
         except: 
             print("[mapcloud] Longitude not found in basic data")
             lon=NaN
+        
+        # masked lwc become zero so the dots are still there but the size is the minimum size
+        lwc[lwc.mask]=0.
         
         if interact==1: maplwc(tim,lwc,lat,lon,1)     # plotting program
         else: maplwc(tim,lwc,lat,lon,0)
