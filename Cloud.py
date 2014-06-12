@@ -2711,9 +2711,11 @@ class Cloud(dict):
         plon=[i for i,x in enumerate(self.dttl) if x == 'longitude'][0]
         lon=copy.deepcopy(self.data[plon])
         palt=[i for i,x in enumerate(self.dttl) if x == 'altitude'][0]
-        alt=copy.deepcopy(self.data[palt].data)
+        # Not sure why we used to copy only the data part (and not the mask). If someone knows why, feel free to expain. 
+        #alt=copy.deepcopy(self.data[palt].data) #t=copy.deepcopy(self.data[pt].data)
+        alt=copy.deepcopy(self.data[palt])
         pt=[i for i,x in enumerate(self.dttl) if x == 'time'][0]
-        t=copy.deepcopy(self.data[pt].data)
+        t=copy.deepcopy(self.data[pt])
 
         #FIND THE QUADRANT
         if st.nanmean(lat)>0:
@@ -2726,9 +2728,9 @@ class Cloud(dict):
         else:
             quad_EW = 'W'
 
-
-        M=runstats(alt,20)
-        alt=np.ma.masked_where((alt>(M[0]+M[1]*1.)+(isnan(alt))), alt)
+        # This piece used to take out anomalously deviant altitude data. We now decided to leave it to the user to go and mask the bad data.
+        #M=runstats(alt,20)
+        #alt=np.ma.masked_where((alt>(M[0]+M[1]*1.)+(isnan(alt))), alt)
             
         norm = matplotlib.colors.Normalize(vmin=t[0],vmax=t[-1])
 
@@ -2746,8 +2748,7 @@ class Cloud(dict):
                     ax.set_ylim(ax.get_ylim()[::-1])
                 if quad_NS == 'S':
                     ax.set_xlim(ax.get_xlim()[::-1])
-            else: 
-                print "yup"
+            else:       # old version of matplotlib that doesn't support the color tracker
                 ax.scatter(abs(lat),abs(lon),alt,lw=0,alpha=1,cmap='spectral',norm=norm)
                 ax.view_init(28,145)
                 ax.yaxis.set_major_formatter(majorFormatter_lon)
