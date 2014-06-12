@@ -586,9 +586,11 @@ class Cloud(dict):
                                     ttmp=self.data[ct[0]]; 
                                     ttmp=ttmp-np.floor(ttmp[1])
                                     f=interpolate.interp1d(ttmp,np.ma.filled(alt,nan),kind='linear')   
+                                    if 'ma' not in str(type(alt)).lower(): alt=np.ma.array(alt,mask=False)
+                                    fma=interpolate.interp1d(ttmp,alt.mask,kind='linear')    # interpolating the mask
                                     ptime.reshape(max(np.shape(ptime)),)
                                     ptime=ptime[(ptime>=np.min(ttmp))*(ptime<=np.max(ttmp))]
-                                    alt=f(ptime)
+                                    alt=np.ma.array(f(ptime),mask=fma(ptime))   
                                     del ttmp, f
                                 ax2=plt.twinx()
                                 ax2.plot(ptime,alt,'k',linewidth='1.5')
