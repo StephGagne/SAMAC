@@ -1,3 +1,6 @@
+################## Copyright 2013-2015 Stephanie Gagne ##################
+#### Distributed under the terms of the GNU General Public License 3 ####
+
 
 
 import matplotlib.pyplot as plt

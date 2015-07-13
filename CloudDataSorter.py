@@ -1,7 +1,7 @@
 
 
 #################################################################################
-##    Copyright 2013 Stephanie Gagne, Landan MacDonald                         ##
+##    Copyright 2013-2015 Stephanie Gagne, 2013-2014 Landan MacDonald          ##
 ##                                                                             ##
 ##    This file is part of SAMAC.                                              ##
 ##                                                                             ##

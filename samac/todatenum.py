@@ -1,3 +1,6 @@
+################## Copyright 2013-2015 Stephanie Gagne ##################
+#### Distributed under the terms of the GNU General Public License 3 ####
+
 
 def todatenum(d):
     # converts to ordinal number (days since jan 1 of year 1)

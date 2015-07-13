@@ -1,3 +1,6 @@
+################## Copyright 2013-2015 Stephanie Gagne ##################
+#### Distributed under the terms of the GNU General Public License 3 ####
+
 # top level init file
 
 # importing most needed libraries (this way it is imported once at the beginning)

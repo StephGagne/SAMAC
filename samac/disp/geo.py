@@ -1,3 +1,6 @@
+#### Copyright 2013-2015 Stephanie Gagne, 2013-2014 Landan MacDonald ####
+#### Distributed under the terms of the GNU General Public License 3 ####
+
 from pylab import *
 import matplotlib.pyplot as plt
 import numpy as np
