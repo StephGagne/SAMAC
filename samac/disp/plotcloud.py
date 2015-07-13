@@ -19,7 +19,7 @@
 #################################################################################
 
 
-#In this file: plotcloud2, plotcloud, maplwc
+#In this file: plotcloud2, plotcloud
 import matplotlib.pyplot as plt
 import numpy as np
 from pylab import *
@@ -638,76 +638,6 @@ def plotcloud(cmall,mcols,c2d,cZs,Adj,Offsts,figi,Qs,proftimes=None,Rtime=None):
     Zs=np.array([Zx1,Zx2,Zy11,Zy21,Zy12,Zy22,Zy12L,Zy22L])+Zorigtime
     return [Zs,Adj,Offsts,figi,fig]
     
-
-def maplwc(tim,lwc,lat,lon,imode,mf=0):
-    import copy
-    from math import isnan
-    """ This function maps an aircraft trajectory. """
-    # this plots the cloud's lwc on a map using basemap.
-    # all inputs must be the same length (except for imode, mf)
-    # imode=0 => interactive mode off, imode=1 => interactive mode on
-    # Stephanie Gagne, Dal, March 2012
-    from mpl_toolkits.basemap import Basemap
-    lat=np.ma.masked_outside(lat, -90, 90)
-    lon=np.ma.masked_outside(lon, -180, 180)
-    if imode==1: plt.ion()
-    elif imode==0: plt.ioff()
-        
-        # regional subplot
-    fig2=plt.figure(1002)
-    ax1=fig2.add_subplot(121)
-    try:
-        llon=np.floor(np.nanmin(lon)); hlon=np.ceil(np.nanmax(lon))
-        llat=np.floor(np.nanmin(lat)); hlat=np.ceil(np.nanmax(lat))
-    except:
-        llon=np.floor(lon.min()); hlon=np.ceil(lon.max())
-        llat=np.floor(lat.min()); hlat=np.ceil(lat.max())
-
-    m = Basemap(llcrnrlon=llon-2, llcrnrlat=llat-2, urcrnrlon=hlon+2, urcrnrlat=hlat+2, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
-    x, y = m(lon, lat)
-    m.drawcoastlines(linewidth=0.25)
-    m.drawcountries(linewidth=0.2)
-    m.drawmapboundary()
-    m.drawcountries()
-    m.drawmapboundary(fill_color='lightcyan')
-    m.fillcontinents(color='tan',lake_color='lightcyan')
-    ax1.plot(x,y,'ro',markeredgewidth=0)
-    m.drawparallels(np.arange(llat-2,hlat+2,1),labels=[1,0,0,0])
-    m.drawmeridians(np.arange(llon-2,hlon+2,1),labels=[0,0,0,1])
-    ax1.set_title('Situation')
-
-    # zoomed on cloud subplot
-    if mf==0:
-        if len(np.shape(lwc))==2:
-            lwc=lwc.data[0]
-        else:
-            lwc=lwc.data
-    ax2=fig2.add_subplot(122)
-    try:
-        llon=np.nanmin(lon); hlon=np.nanmax(lon)
-        llat=np.nanmin(lat); hlat=np.nanmax(lat)
-    except: 
-        if type(lon)==np.ma.core.MaskedArray: llon=np.min(lon); hlon=np.max(lon)
-        if type(lon)==np.ma.core.MaskedArray: llat=np.min(lat); hlat=np.max(lat)
-    m = Basemap(llcrnrlon=llon, llcrnrlat=llat, urcrnrlon=hlon, urcrnrlat=hlat, projection='lcc', lat_1=0.5*(llat+hlat), lon_0=0.5*(llon+hlon), resolution='i', area_thresh=100)
-    x, y = m(lon, lat)
-    m.drawcoastlines(linewidth=0.25)
-    m.drawcountries(linewidth=0.2)
-    m.drawmapboundary()
-    m.drawcountries()
-    m.drawmapboundary(fill_color='lightcyan')
-    m.fillcontinents(color='tan',lake_color='lightcyan',zorder=0)
-    if hlat-llat>0.5: m.drawparallels(np.arange(np.floor(llat),np.ceil(hlat),0.5),labels=[0,1,0,0])
-    elif hlat-llat<=0.5: m.drawparallels(np.arange(np.floor(llat),np.ceil(hlat),0.05),labels=[0,1,0,0])
-    if hlon-llon>1.: m.drawmeridians(np.arange(np.floor(llon),np.ceil(hlon),1),labels=[0,0,0,1])
-    elif hlon-llon<=1.: m.drawmeridians(np.arange(np.floor(llon),np.ceil(hlon),0.1),labels=[0,0,0,1])
-    for i in range(len(lwc)):
-        if isnan(lwc[i]):
-            lwc[i]=0.
-    ax2.scatter(x,y,c=tim,s=70*lwc+1.5, marker='o',cmap='spectral',edgecolors='none')
-    ax2.set_title('Flight map: \nsize=lwc \ncolor=time (black to white)')
-    
-    if imode==0: plt.show()
 
 
 
