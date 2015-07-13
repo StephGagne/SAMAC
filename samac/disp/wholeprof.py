@@ -6,7 +6,7 @@ import scipy.stats.stats as st
 from scipy import interpolate
 import datetime as dt
 
-
+import samac
 
 #########################################################################        
 #############################   wholeprof   #############################
@@ -149,8 +149,8 @@ def wholeprof(CL,interact=None,axtype1='log',axtype2='log'):
                 DDtotSize.append(raw_input("What is the size above which the total was made?  "))
             elif sum(~isnan(sd["data"]))==0 and sum(~isnan(sd["total"]))==0: crash
             else: 
-                DD100.append(np.ma.vstack((newalt,dNdlogDp2N(sd,100,nan)[ix])))
-                DD200.append(np.ma.vstack((newalt,dNdlogDp2N(sd,200,nan)[ix])))
+                DD100.append(np.ma.vstack((newalt,samac.dNdlogDp2N(sd,100,nan)[ix])))
+                DD200.append(np.ma.vstack((newalt,samac.dNdlogDp2N(sd,200,nan)[ix])))
         except: 
             DD100.append(np.ones((2,1))*NaN); DD200.append(np.ones((2,1))*NaN); DDtot.append(np.ones((2,1))*NaN); DDtotSize.append('None')
             print("[wholeprof] %s was not successfully added to the plot." % sd["Distname"])
