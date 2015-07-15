@@ -600,7 +600,8 @@ class Cloud(dict):
     def lwcflag(self,base='bg'):
         """ Interactive method. This method asks the users the rate the LWC profiles according to their quality and features. All vertical scans are evaluated the first time, after which one can edit a particular scan. This method fully handles the extradata module.
         base: base=4point: to use base height selection between 4-point height average of the lower and upper estimates for the base height (defheight).
-              base=bg: to use the best guess base height (defBGheight))"""
+              base=bg: to use the best guess base height (defBGheight))
+        flags: 1-Good quality (young/smooth) \t2-Entrainment at the top \t3-Entrainment at the bottom \t4-Entrainment in the cloud \t5-missing data \t6-Other/Bad/Evaporated/Incomplete Profile \t7-lwc>adiabatic"""
         plt.ion()
         calt=[i for i,x in enumerate(self.dttl) if x == 'altitude']; calt=calt[0]
         ct=[i for i,x in enumerate(self.dttl) if x == 'time']; ct=ct[0]
