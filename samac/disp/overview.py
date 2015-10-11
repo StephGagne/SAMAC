@@ -12,7 +12,14 @@ def overview(CL,interact=0,Rtime=None):
     """ This method plots the cloud object's Altitude, Latitude, Longitude, Particle concentration, Droplet concentration, Liquid Water Content and Precipitation drop concentration as a function of time for the whole cloud period. Extradata module is fully handled.
         Use CloudObj.overview() for a non-interactive plot;
         Use CloudObj.overview(1) or CloudObj.overview(interact=1) for an interactive plot where you can magnify, induce offsets, and zoom.
-        Use CloudObj.overview(Rtime=1) to display Hour:Minutes instead of fraction of day on the x-axis."""
+        Use CloudObj.overview(Rtime=1) to display Hour:Minutes instead of fraction of day on the x-axis.
+        The color bar at the bottom of the upper plot matches the color coding of mapcloud.
+        The color bars at the top of the bottom plot correspond to the different legs as follows:
+            Magenta: verticloud
+            Yellow:  abovecloud
+            Cyan:    belowcloud
+            Black:   horicloud
+        Note that they can be overlaying each other."""
     from plotcloud import plotcloud2
     
     # time
