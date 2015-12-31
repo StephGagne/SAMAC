@@ -27,8 +27,7 @@
 # __del__(self)
 # add2basic(self,newdata,newttl,newunit)
 # describe(self)
-# addsizedistxl(self)
-# addsizedist(self)
+# addsd(self)
 # defheight(self)
 # defBGheight(self)
 # lwcflag(self,base=bg)
@@ -414,7 +413,7 @@ class Cloud(dict):
                 if any(sdtmp["time"]>dt.datetime(1950,1,1,0,0,0).toordinal()) and any(sdtmp["time"]<dt.datetime(2050,1,1,0,0,0).toordinal()): pass
                 elif any(sdtmp["time"][0]+xltime>dt.datetime(1950,1,1,0,0,0).toordinal()) and any(sdtmp["time"][0]+xltime<dt.datetime(2050,1,1,0,0,0).toordinal()): 
                     sdtmp["time"]=sdtmp["time"]+xltime
-                else: print("[addsizedistxl] Strange times...")
+                else: print("[addsd] Strange times...")
             else:
                 sdtmp["time"]=self.data[0]
 
@@ -452,7 +451,7 @@ class Cloud(dict):
                     if any(sdtmp["time"]>dt.datetime(1950,1,1,0,0,0).toordinal()) and any(sdtmp["time"]<dt.datetime(2050,1,1,0,0,0).toordinal()): pass
                     elif any(sdtmp["time"][0]+xltime>dt.datetime(1950,1,1,0,0,0).toordinal()) and any(sdtmp["time"][0]+xltime<dt.datetime(2050,1,1,0,0,0).toordinal()): 
                         sdtmp["time"]=sdtmp["time"]+xltime
-                    else: print("[addsizedist] Strange ordinal...")
+                    else: print("[addsd] Strange ordinal...")
                 else: 
                     T1=raw_input("What is the date? (yyyymmdd)  ")
                     T1=samac.todatenum(dt.datetime.strptime(T1, '%Y%m%d'))
