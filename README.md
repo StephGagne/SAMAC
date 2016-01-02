@@ -12,3 +12,5 @@ To report bugs, suggest improvements, or all other types of issues you might wan
 To contribute to the code, you're at the right place! Feel free to download the code, and submit new functions. Make sure to have a look at the wiki pages here https://github.com/StephGagne/SAMAC/wiki
 
 Thank you for your interest!
+
+http://dx.doi.org/10.5281/zenodo.35730
