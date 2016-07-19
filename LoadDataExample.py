@@ -1,35 +1,59 @@
 #! /usr/bin/ipython
 
-#########################################################################################################################
-#	cloudObject is a python script designed to convert a data file to a cloud object for use with SAMAC software	#
-#	The data file is a parameter											#
-#	The script is executed with the command "ipython cloudObject.py"						#
-#	Created June 2016												#
-#	Copyright 2016 Alex Butland											#
-#########################################################################################################################
+"""
+   NAME:
+     LoadDataExample.py
+
+   PURPOSE:
+     LoadDataExample is a python script designed to convert a data file to a cloud object for use with SAMAC software
+
+   CALLS:
+     Nothing
+
+   MODIFICATIONS:
+     Alex Butland   - 160712:  Modification
+
+   USAGE:
+     /usr/local/SAMAC/tags/0.9.2/LoadDataExample.py
+
+   COPYRIGHT NOTICE:
+     Copyright 2016 Alex Butland                                                                                  
+"""
 
 
 import numpy as np
 import csv
-import Cloud  #SAMAC object
+import sys
+#SAMAC object
+import Cloud  
 import pickle
 
-f=open('BasicAircraftData.dat','r') 					#user imports data into python
-lines=f.readlines()
+infile = sys.argv[-1]
+
+#Opening the file and storing its data. 
+f = open(infile,'r') 
+lines = f.readlines()
 f.close()
 
-for i in range(len(lines)):         					#removing end of line remarks
-	lines[i]=lines[i].strip()
+#Removing end of line remarks.
+for i in range(len(lines)):         					
+    lines[i] = lines[i].strip()
 
-titles=list(map(str,lines[0].split(',')))				#getting titles and units from file and putting them into lists
-units=list(map(str,lines[1].split(',')))
+#Getting titles and units from data and putting them into lists.
+titles = list(map(str,lines[0].split(',')))				
+units = list(map(str,lines[1].split(',')))
 
-df=list()
+df = list()
 
-df=np.loadtxt('BasicAircraftData.dat',skiprows=2,delimiter=',')		#loading data as floats into a numpy array, skip 2 rows of header, commas as delimiters
-data=np.ma.array(df)							#formatting the data as a masked array
+#Loading data as floats into a numpy array, skipping 2 rows of titles and units.
+#Commas used as delimiters between data.
+df = np.loadtxt(infile,skiprows = 2,delimiter = ',')	
 
-times={									#creating an empty times of maneuvers box as a dictionary
+#Formatting the data as a masked array.	
+data = np.ma.array(df)							
+
+#Creating an empty times of maneuvers box as a dictionary.
+times = {									
 "abovecloud": np.zeros((0,2)),
 "belowcloud": np.zeros((0,2)),
 "cloud": np.zeros((0,2)),
@@ -37,14 +61,17 @@ times={									#creating an empty times of maneuvers box as a dictionary
 "verticloud": np.zeros((0,2))
 }
 
-sizedist=list()								#create an empty size distribution box
+#Create an empty size distribution box.
+sizedist = list()								
 
-ExampleCloud=Cloud.Cloud(data.transpose(),titles,units,times,sizedist)		#creating a cloud object with the data we have
+#Creating a cloud object with the data we have.
+ExampleCloud = Cloud.Cloud(data.transpose(),titles,units,times,sizedist)		
 
-ExampleCloud.times["cloud"]=np.array([[ExampleCloud.data[0][0], ExampleCloud.data[0][1945]]])		#defining the start and end times of the cloud object
+#Defining the start and end times of the cloud object.
+ExampleCloud.times["cloud"] = np.array([[ExampleCloud.data[0][0], ExampleCloud.data[0][1945]]])		
 
-pickle.dump(ExampleCloud,open("ExampleCloud.p","wb"))				#saving the object using pickle
+#Saving the object using pickle.
+pickle.dump(ExampleCloud,open("ExampleCloud.p","wb"))				
 
-ExCloud=pickle.load(open("/usr/local/SAMAC/tags/0.9.2/ExampleCloud.p","rb"))	#cloud object
-
-
+#Cloud object.
+ExCloud = pickle.load(open("/usr/local/SAMAC/tags/0.9.2/ExampleCloud.p","rb"))	
